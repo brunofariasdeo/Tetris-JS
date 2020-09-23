@@ -7,11 +7,15 @@
         <title> TETRIS </title>
     </head>
 
-    <body>
-        <h3>Score: <span id="score">0</span></h3>
-        <h3><span id="gameover"></span></h3>
-        <button id="start-button">Start/Pause</button>
-        <button id="restart-button">Restart</button>
+    <body>        
+
+        <div class="options">  
+            <h3 class="score">Score: <span id="score">0</span></h3>           
+            <div class="treat-wrapper">
+                <button class="treat-button" id="start-button">Start!</button>
+                <button class="treat-button" id="restart-button">Restart!</button>
+            </div>                         
+        </div>         
 
         <div class="container">
             <div class="grid">            
@@ -242,4 +246,11 @@
         </div>
 
     </body>
+
+    <script></script>
+    <script>
+    var sound = new Howl({
+      src: ['Sleep Away.mp3']
+    });
+    </script>
 </html>
