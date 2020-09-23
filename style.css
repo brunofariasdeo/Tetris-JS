@@ -1,13 +1,20 @@
-.grid {
+.grid {    
     width: 200px;
     height: 400px;
     display: flex;
     flex-wrap: wrap;
-    background-color: blue;
+    background-color:white;
 }
 
 .grid div {
+    margin: 1px;
     height: 20px;
-    width: 20px;
-    background-color: red;
+    width: 20px; 
 } 
+
+.noPiece {
+    background-color: red;
+}
+.piece {
+    background-color: blue;
+}
