@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const iShape = [
         [0, height, height*2, height*3], 
         [0, -1, 1, 2],  
-        [height, height-1, height+1, height+2], 
-        [0, height, height*2, height*3] 
+        [0, height, height*2, height*3] ,
+        [height, height-1, height+1, height+2]        
     ]
 
     const zShape = [
@@ -36,12 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let pieces = [iShape, zShape, lShape, strangeShape]
     let currentPos = 4
+    let currentRotate = 0
+    let currentShape
     let currentPiece = nextPiece()
     timer = setInterval(moveDown, 700)
 
     function nextPiece() {
-        i = Math.floor(Math.random() * pieces.length)
-        return pieces[i][0]
+        currentShape = Math.floor(Math.random() * pieces.length)
+        return pieces[currentShape][0]
     }
 
     function drawGrids() {
@@ -95,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if ((currentPos+index) % height === 0) {
                 atLimit = true
                 break
-            } else if (squares[currentPos+index-1].classList.contains("freeze")) {
+            } else if (index > 0 && squares[currentPos+index-1].classList.contains("freeze")) {
                 pieceOnLeft = true
                 break
             }
@@ -109,6 +111,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function moveRight() {
+        let atLimit = false
+        let pieceOnRight = false
+        for (index of currentPiece) {
+            if ((currentPos+index) % height === height-1) {
+                console.log(currentPos+index)
+                atLimit = true
+                break
+            } else if (index > 0 && squares[currentPos+index+1].classList.contains("freeze")) {
+                pieceOnRight = true
+                break
+            }
+        }
+        if (!atLimit && !pieceOnRight) {
+            undrawPiece()
+            currentPos += 1
+            drawPiece()
+        } else if(pieceOnRight){
+            updatePiece()
+        }
+    }
+
+    function rotate() {
+        if (currentRotate < 3) {
+            currentRotate++
+        } else {
+            currentRotate = 0
+        }
+        
+        undrawPiece()
+        currentPiece = pieces[currentShape][currentRotate]
+        drawPiece()
+    }
+
     function control(e) {
         if (e.keyCode === 37) {
             moveLeft()
@@ -120,15 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
             moveDown()
         }
     }
-
-    function putFast(e) {
-        if (e.keyCode === 40) {
-            moveDown()
-        }
-    }
     
     document.addEventListener('keydown', control)
-    document.addEventListener('keydown', putFast)
     drawGrids()
     drawPiece() 
 })
