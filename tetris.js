@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let pieces = [iShape, zShape, lShape, strangeShape]
     let currentPos = 4
     let currentPiece = nextPiece()
-    timer = setInterval(moveDown, 60)
+    timer = setInterval(moveDown, 700)
 
     function nextPiece() {
         i = Math.floor(Math.random() * pieces.length)
@@ -66,12 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }        
     }
 
+    function updatePiece() {
+        currentPos = 4
+        currentPiece = nextPiece()
+    }
+
     function stop() {
         for (index of currentPiece) {
             if (index+currentPos+height > 199 || squares[index+currentPos+height].classList.contains("freeze")) {   
                 currentPiece.forEach(index => squares[currentPos+index].classList.add("freeze"))           
-                currentPos = 4
-                currentPiece = nextPiece()
+                updatePiece()
                 break
             }                       
         }
@@ -81,10 +85,50 @@ document.addEventListener('DOMContentLoaded', () => {
         stop()             
         undrawPiece()
         currentPos += height
-        drawPiece()    
+        drawPiece()           
     }
 
-    nextPiece()    
+    function moveLeft() {
+        let atLimit = false
+        let pieceOnLeft = false
+        for (index of currentPiece) {
+            if ((currentPos+index) % height === 0) {
+                atLimit = true
+                break
+            } else if (squares[currentPos+index-1].classList.contains("freeze")) {
+                pieceOnLeft = true
+                break
+            }
+        }
+        if (!atLimit && !pieceOnLeft) {
+            undrawPiece()
+            currentPos -= 1
+            drawPiece()
+        } else if(pieceOnLeft){
+            updatePiece()
+        }
+    }
+
+    function control(e) {
+        if (e.keyCode === 37) {
+            moveLeft()
+        } else if (e.keyCode === 38) {
+            rotate()
+        } else if (e.keyCode === 39) {
+            moveRight()            
+        } else if (e.keyCode === 40) {
+            moveDown()
+        }
+    }
+
+    function putFast(e) {
+        if (e.keyCode === 40) {
+            moveDown()
+        }
+    }
+    
+    document.addEventListener('keydown', control)
+    document.addEventListener('keydown', putFast)
     drawGrids()
     drawPiece() 
 })
