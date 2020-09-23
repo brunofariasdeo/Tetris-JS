@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid')
     let squares = Array.from(document.querySelectorAll('.grid div'))
-    const score = document.querySelector('#score')
+    const gameScore = document.querySelector('#score')
     const startBt = document.querySelector('#start-button')
+    const restartBt = document.querySelector('#restart-button')
     
     const height = 10
     
@@ -69,10 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function freezePiece() {
         for (index of currentPiece) {
-            if (currentPos+index > 0) {
-                squares[currentPos + index].classList.add("freeze")
+            if (currentPos+index > 0) {                
+                squares[currentPos + index].classList.add("freeze")                
             }
         }
+        updatePiece()
     }
 
     function drawPiece() {
@@ -101,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function stop() {
         for (index of currentPiece) {
             if (index+currentPos+height > 199 || squares[index+currentPos+height].classList.contains("freeze")) {   
-                currentPiece.forEach(index => squares[currentPos+index].classList.add("freeze"))           
+                freezePiece()        
                 updatePiece()
                 break
             }                       
@@ -118,13 +120,34 @@ document.addEventListener('DOMContentLoaded', () => {
         return false
     }
 
-    function moveDown() { 
-        console.log(gameOver)
+    function score() {
+        for (let i=0; i<200; i+=10) {
+            complete = true
+            for (let j=i; j<i+10; j++) {
+                if (!squares[j].classList.contains("freeze")) {
+                    complete = false
+                    break
+                }
+            }
+            if (complete) {
+                removedSquares = squares.splice(i, 10)
+                removedSquares.forEach(element => {
+                    element.classList.remove("piece")    
+                    element.classList.remove("freeze")  
+                })
+                squares = removedSquares.concat(squares)
+                squares.forEach(cell => grid.appendChild(cell))
+            }
+        }
+    }
+
+    function moveDown() {     
         stop()        
         undrawPiece()
         currentPos += height
         drawPiece()        
         gameOver = chkGameOver() 
+        score()
     }
 
     function moveLeft() {      
@@ -203,11 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (gameOver) {
                 drawGrids()
             }
-            gameOver = false
+            gameOver = false            
             currentPos = 4
             currentRotate = 0
             currentShape
-            currentPiece = nextPiece()               
+            currentPiece = nextPiece()   
+            clearInterval(timerId)             
             timerId = setInterval(moveDown, 700)
             started = true
         } else if (started === true) {
@@ -216,12 +240,24 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             started = true
             timerId = setInterval(moveDown, 700)
-        }
-        
+        }        
+    }
+
+    function restartGame() {
+        drawGrids()
+        gameOver = false            
+        currentPos = 4
+        currentRotate = 0
+        currentShape
+        currentPiece = nextPiece()  
+        clearInterval(timerId)             
+        timerId = setInterval(moveDown, 700)
+        started = true
     }
 
     drawGrids()
     startBt.addEventListener('click', startAndPause)    
+    restartBt.addEventListener('click', restartGame)
     document.addEventListener('keyup', control)
     document.addEventListener('keydown', goDown)
 })
