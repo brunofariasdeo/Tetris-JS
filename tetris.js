@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentRotate
     let currentShape
     let currentPiece 
+    let timerId
+    let gameOver = false
     let started = null
 
     function nextPiece() {
@@ -47,8 +49,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function drawGrids() {
-        for (let i=0; i<squares.length; i++) {           
-            squares[i].classList.add("noPiece")            
+        for (let i=0; i<squares.length; i++) {  
+            if (squares[i].classList.contains("noPiece")) {
+                squares[i].classList.remove("piece")    
+                squares[i].classList.remove("freeze")  
+            } else {                       
+                squares[i].classList.add("noPiece")     
+            }       
         }      
     }
 
@@ -60,10 +67,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function drawPiece() {
+    function freezePiece() {
         for (index of currentPiece) {
             if (currentPos+index > 0) {
-                squares[currentPos + index].classList.add("piece")
+                squares[currentPos + index].classList.add("freeze")
+            }
+        }
+    }
+
+    function drawPiece() {
+        let frozenPiece = false
+        for (index of currentPiece) {
+            if (currentPos+index > 0) {
+                if (squares[currentPos + index].classList.contains("freeze")) {
+                    freezePiece()
+                    console.log("asdasd")
+                    frozenPiece = true
+                } else {
+                    squares[currentPos + index].classList.add("piece")
+                }
+            }
+            if (frozenPiece) {
+                break
             }
         }        
     }
@@ -83,17 +108,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function gameOver() {
-
+    function chkGameOver() {
+        if (squares[4].classList.contains("freeze")) {          
+            console.log("Game")
+            clearInterval(timerId)
+            timerId = null
+            return true
+        }
+        return false
     }
 
-    function moveDown() {  
+    function moveDown() { 
+        console.log(gameOver)
         stop()        
-        isInEvent = true     
         undrawPiece()
         currentPos += height
-        drawPiece()         
-        isInEvent = false  
+        drawPiece()        
+        gameOver = chkGameOver() 
     }
 
     function moveLeft() {      
@@ -139,35 +170,40 @@ document.addEventListener('DOMContentLoaded', () => {
             currentRotate++
         } else {
             currentRotate = 0
-        }
-        oldRotation = currentPiece
-        currentPiece = pieces[currentShape][currentRotate]      
-            
+        }      
         undrawPiece()
         currentPiece = pieces[currentShape][currentRotate]
         drawPiece()
     }
 
     function control(e) { 
-        if (e.keyCode === 37) {                        
-            moveLeft()       
-        } else if (e.keyCode === 38) {
-            rotate()           
-        } else if (e.keyCode === 39) {     
-            moveRight()       
-        } else if (e.keyCode === 40) {
-            moveDown()           
+        if (!gameOver && started) {
+            if (e.keyCode === 37) {                        
+                moveLeft()       
+            } else if (e.keyCode === 38) {
+                rotate()           
+            } else if (e.keyCode === 39) {     
+                moveRight()       
+            } else if (e.keyCode === 40) {
+                moveDown()           
+            }
         }
     }        
 
     function goDown(e) {
-        if (e.keyCode === 40) {
-            moveDown()
+        if (!gameOver && started) {      
+            if (e.keyCode === 40) {
+                moveDown()
+            }
         }
     }
 
-    function startAndPause() {
-        if (started === null) {
+    function startAndPause() {     
+        if (gameOver || started === null) {
+            if (gameOver) {
+                drawGrids()
+            }
+            gameOver = false
             currentPos = 4
             currentRotate = 0
             currentShape
