@@ -1,3 +1,9 @@
+.container {    
+    display: flex;
+    flex-wrap: wrap;
+    background-color:white;
+}
+
 .grid {   
     width: 220px;
     height: 400px;
@@ -11,6 +17,21 @@
     width: 20px;
     height: 20px; 
 } 
+
+.next-piece-grid {   
+    margin-left: 50px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: white;
+}
+
+.next-piece-grid div {
+    margin: 1px;
+    width: 28px;
+    height: 28px; 
+}
 
 .noPiece {
     background-color: red;
