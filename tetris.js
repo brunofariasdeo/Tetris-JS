@@ -35,11 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
 
     let pieces = [iShape, zShape, lShape, strangeShape]
-    let currentPos = 4
-    let currentRotate = 0
+    let currentPos
+    let currentRotate
     let currentShape
-    let currentPiece = nextPiece()
-    timer = setInterval(moveDown, 700)
+    let currentPiece 
+    let started = null
 
     function nextPiece() {
         currentShape = Math.floor(Math.random() * pieces.length)
@@ -83,21 +83,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function moveDown() {  
-        stop()             
-        undrawPiece()
-        currentPos += height
-        drawPiece()           
+    function gameOver() {
+
     }
 
-    function moveLeft() {
+    function moveDown() {  
+        stop()        
+        isInEvent = true     
+        undrawPiece()
+        currentPos += height
+        drawPiece()         
+        isInEvent = false  
+    }
+
+    function moveLeft() {      
         let atLimit = false
         let pieceOnLeft = false
         for (index of currentPiece) {
             if ((currentPos+index) % height === 0) {
                 atLimit = true
                 break
-            } else if (index > 0 && squares[currentPos+index-1].classList.contains("freeze")) {
+            } else if ((currentPos+index) > 0 && squares[currentPos+index-1].classList.contains("freeze")) {
                 pieceOnLeft = true
                 break
             }
@@ -106,20 +112,17 @@ document.addEventListener('DOMContentLoaded', () => {
             undrawPiece()
             currentPos -= 1
             drawPiece()
-        } else if(pieceOnLeft){
-            updatePiece()
         }
     }
 
-    function moveRight() {
+    function moveRight() {       
         let atLimit = false
         let pieceOnRight = false
         for (index of currentPiece) {
-            if ((currentPos+index) % height === height-1) {
-                console.log(currentPos+index)
+            if ((currentPos+index) % height === height-1) {                
                 atLimit = true
                 break
-            } else if (index > 0 && squares[currentPos+index+1].classList.contains("freeze")) {
+            } else if ((currentPos+index) > 0 && squares[currentPos+index+1].classList.contains("freeze")) {
                 pieceOnRight = true
                 break
             }
@@ -128,38 +131,63 @@ document.addEventListener('DOMContentLoaded', () => {
             undrawPiece()
             currentPos += 1
             drawPiece()
-        } else if(pieceOnRight){
-            updatePiece()
-        }
+        }         
     }
 
-    function rotate() {
+    function rotate() {        
         if (currentRotate < 3) {
             currentRotate++
         } else {
             currentRotate = 0
         }
-        
+        oldRotation = currentPiece
+        currentPiece = pieces[currentShape][currentRotate]      
+            
         undrawPiece()
         currentPiece = pieces[currentShape][currentRotate]
         drawPiece()
     }
 
-    function control(e) {
-        if (e.keyCode === 37) {
-            moveLeft()
+    function control(e) { 
+        if (e.keyCode === 37) {                        
+            moveLeft()       
         } else if (e.keyCode === 38) {
-            rotate()
-        } else if (e.keyCode === 39) {
-            moveRight()            
+            rotate()           
+        } else if (e.keyCode === 39) {     
+            moveRight()       
         } else if (e.keyCode === 40) {
+            moveDown()           
+        }
+    }        
+
+    function goDown(e) {
+        if (e.keyCode === 40) {
             moveDown()
         }
     }
-    
-    document.addEventListener('keydown', control)
+
+    function startAndPause() {
+        if (started === null) {
+            currentPos = 4
+            currentRotate = 0
+            currentShape
+            currentPiece = nextPiece()               
+            timerId = setInterval(moveDown, 700)
+            started = true
+        } else if (started === true) {
+            started = false
+            clearInterval(timerId)
+        } else {
+            started = true
+            timerId = setInterval(moveDown, 700)
+        }
+        
+    }
+
     drawGrids()
-    drawPiece() 
+    startBt.addEventListener('click', startAndPause)    
+    document.addEventListener('keyup', control)
+    document.addEventListener('keydown', goDown)
 })
 
 
