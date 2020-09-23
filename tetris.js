@@ -244,34 +244,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }         
     }
 
+    function leftSide() {
+        return currentPos % height < 5
+    }
+
     function tryRotation() {
-        if (currentPos % height < 1) {
-            undrawPiece()
-            currentPos += 1
-            drawPiece()
-            tryRotation()
-        } else if (currentPos % height > height-3) {
-            undrawPiece()
-            currentPos -= 1
-            drawPiece()
-            tryRotation()
+        let nextRotationI = nextRotation()
+        if (leftSide()) {
+            if (pieces[currentShape][nextRotationI].some(index => (currentPos + index) > 199 || (currentPos + index) < 0 || squares[currentPos + index].classList.contains("freeze") || (currentPos+index+1) % height === 0)) {
+                return false
+            } else {
+                return true
+            }
+        } else {
+            if (pieces[currentShape][nextRotationI].some(index => (currentPos + index) > 199 || (currentPos + index) < 0 || squares[currentPos + index].classList.contains("freeze") || (currentPos+index) % height === 0)) {
+                return false
+            } else {
+                return true
+            }
         }
     }
 
-    function rotate() {        
+    function nextRotation() {
         if (currentRotation < 3) {
-            currentRotation++
+            return currentRotation + 1
         } else {
-            currentRotation = 0
-        }      
+            return 0
+        } 
+    }
 
-        for (let i=0; i<3; i++) {
-            tryRotation(i)
-        }            
-        tryRotation()  
-        undrawPiece()      
-        currentPiece = pieces[currentShape][currentRotation]
-        drawPiece()
+    function rotate() {        
+        if (tryRotation()) {
+            currentRotation = nextRotation()
+            undrawPiece()      
+            currentPiece = pieces[currentShape][currentRotation]
+            drawPiece()
+        }
     }
 
     function control(e) { 
