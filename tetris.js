@@ -241,13 +241,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (leftSide()) {
             if (pieces[currentShape][nextRotationI].some(index => (currentPos + index) > 199 || (currentPos + index) < 0 || squares[currentPos + index].classList.contains("freeze") || (currentPos+index+1) % height === 0)) {
                 return false
+            } else if (pieces[currentShape][nextRotationI].some(index => (currentPos + index + height) > 199 || (currentPos + index + height) < 0 || squares[currentPos + index + height].classList.contains("freeze") || (currentPos+index+1) % height === 0)) {
+                return false
             } else {
                 return true
             }
         } else {
             if (pieces[currentShape][nextRotationI].some(index => (currentPos + index) > 199 || (currentPos + index) < 0 || squares[currentPos + index].classList.contains("freeze") || (currentPos+index) % height === 0)) {
                 return false
-            } else {
+            } else if (pieces[currentShape][nextRotationI].some(index => (currentPos + index + height) > 199 || (currentPos + index + height) < 0 || squares[currentPos + index + height].classList.contains("freeze") || (currentPos+index) % height === 0)) {
+                return false
+            }else {
                 return true
             }
         }
