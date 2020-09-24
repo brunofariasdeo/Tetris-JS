@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let pieces = [iShape, zShape, lShape, strangeShape, squareShape]
+    let oldPosition
     let currentPos
     let currentRotation
     let currentShape
@@ -104,21 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePiece()
     }
 
-    function drawPiece() {
-        let frozenPiece = false
-        for (index of currentPiece) {
-            if (currentPos+index > 0) {
-                if (squares[currentPos + index].classList.contains("freeze")) {
-                    freezePiece()                    
-                    frozenPiece = true
-                } else {
+    function drawPiece() {        
+        if (currentPiece.some(index => currentPos+index > 0 && squares[currentPos + index].classList.contains("freeze"))) {
+            currentPos = oldPosition
+            freezePiece()
+        } else {
+            currentPiece.forEach(index => {
+                if (currentPos + index > 0) {
                     squares[currentPos + index].classList.add("piece")
                 }
-            }
-            if (frozenPiece) {
-                break
-            }
-        }        
+            })
+        }             
     }
 
     function displayNext() {
@@ -153,10 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function chkGameOver() {
-        if (squares[4].classList.contains("freeze")) {        
+        if (squares[3].classList.contains("freeze") || squares[4].classList.contains("freeze") || squares[5].classList.contains("freeze")) {        
             startBt.innerHTML = "Start!"
-            alert("Game Over!!")            
-            score = 0            
+            //alert("Game Over!!")            
+            score = 0  
             return true
         }
         return false
@@ -187,11 +184,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function moveDown() {    
         undrawPiece()
+        oldPosition = currentPos
         currentPos += height
-        drawPiece()        
+        drawPiece(oldPosition)  
         gameOver = chkGameOver()         
         stop()         
         addScore()
+        
     }
 
     function moveLeft() {      
@@ -251,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return false
             } else if (pieces[currentShape][nextRotationI].some(index => (currentPos + index + height) > 199 || (currentPos + index + height) < 0 || squares[currentPos + index + height].classList.contains("freeze") || (currentPos+index) % height === 0)) {
                 return false
-            }else {
+            } else {
                 return true
             }
         }
@@ -300,9 +299,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function gameLoop() {
         while (!gameOver && started) {            
-            moveDown()
+            moveDown()            
             await sleep(300)
-        }        
+        }    
+        if (gameOver) {
+            alert("Game Over!!") 
+        }    
     }
 
     function startAndPause() {     
