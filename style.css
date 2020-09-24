@@ -7,7 +7,7 @@
   appearance: none;
   background: linear-gradient(to bottom,#FE06D2, #FE06D2);
   border: none;
-  color: #FFF;
+  color:#4ae8c6;
   border-radius: 2em;
   padding: .6em 1.5em;
   overflow: hidden;
@@ -82,34 +82,32 @@
     }
 }
 
-
 .options {   
     margin-left: 40%;
     flex: 1;
     align-items: center;   
-    margin-top: -1%;  
+    margin-top: -3%;  
     color: white; font-weight: bold; font-size: 20px; 
 }
 
 .score {
     margin-left: 5%;
     font-size: 35px;
+    color: #4ae8c6;
 }
 
 .container {   
     display: flex;   
     margin-left: 43%;
-    margin-top: 7%;
+    margin-top: 10%;
     flex-wrap: wrap;    
 }
 
 body {       
-    background-image: url("https://images3.alphacoders.com/964/964419.jpg");
-    background-size:cover;
+    background-image: url("background.jpg");
     background-repeat:no-repeat;
     background-attachment: fixed;    
-    background-size: 100%;
-    background-repeat: no-repeat;  
+    background-size: 100%;   
     font-family: 'Press Start 2P', cursive;
 }
 
@@ -117,8 +115,10 @@ body {
     width: 220px;
     height: 440px;
     display: flex;    
-    flex-wrap: wrap;
-    background-color: #4ABBE8;
+    flex-wrap: wrap;    
+    background-color: #4ABBE8;       
+    border: 3px solid #4ae8c6;
+    border-radius: 5px;
 }
 
 .grid div {
@@ -129,19 +129,21 @@ body {
 
 .next-piece-grid {   
     margin-left: 30px;
-    width: 150px;
-    height: 120px;   
+    width: 87px;
+    height: 116px;   
     display: flex;
     margin-top: 18%;
     flex-direction: column;
     flex-wrap: wrap;
     background-color: #4ABBE8;
+    border: 3px solid #4ae8c6;
+    border-radius: 5px;
 }
 
 .next-piece-grid div {
     margin: 1px;
-    width: 28px;
-    height: 28px; 
+    width: 27px;
+    height: 27px; 
 }
 
 .noPiece {
