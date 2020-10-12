@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameScore = document.querySelector('#score')    
     const startBt = document.querySelector('#start-button')
     const restartBt = document.querySelector('#restart-button')
+    const musicPlayer = document.querySelector(".myAudio")
     
     const height = 10
     
@@ -298,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function gameLoop() {
-        while (!gameOver && started) {            
+        while (!gameOver && started) {    
             moveDown()            
             await sleep(300)
         }    
@@ -322,17 +323,21 @@ document.addEventListener('DOMContentLoaded', () => {
             currentPiece = nextPiece()  
             started = true
             gameLoop()
+            playMusic()
         } else if (started === true) {
-            startBt.innerHTML = "Unpause"  
-            started = false            
+            startBt.innerHTML = "Resume"  
+            started = false
+            pauseMusic()          
         } else {
             startBt.innerHTML = "Pause"  
             started = true    
-            gameLoop()        
+            gameLoop()
+            playMusic()        
         }        
     }
 
-    function restartGame() {        
+    function restartGame() {    
+        playMusic()    
         drawGrids()      
         score = 0      
         gameScore.innerHTML = score    
@@ -348,12 +353,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }        
     }
 
+    function playMusic() {
+        musicPlayer.classList.add("playing")
+        musicPlayer.classList.remove("paused")
+        musicPlayer.play();
+    }
+
+    function pauseMusic() {
+        musicPlayer.classList.add("paused")
+        musicPlayer.classList.remove("playing")
+        musicPlayer.pause();
+    }
+
     drawGrids()
     nextSquares.forEach(square => square.classList.add("noPiece"))
     startBt.addEventListener('click', startAndPause)    
     restartBt.addEventListener('click', restartGame)
     document.addEventListener('keydown', control)
     document.addEventListener('keydown', goDown)
-})
-
+}) 
 
